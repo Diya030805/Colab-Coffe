@@ -11,6 +11,7 @@ import { About } from '../components/sections/About';
 import { Testimonials } from '../components/sections/Testimonials';
 import { FeaturedBrews } from '../components/sections/FeaturedBrews';
 import { VisitUs } from '../components/sections/VisitUs';
+import { WorkspaceWidget } from '../components/sections/WorkspaceWidget';
 import { InstagramSection } from '../components/sections/InstagramSection';
 import { GallerySection } from '../components/sections/GallerySection';
 import { CoffeeLoyaltyCard } from '../components/CoffeeLoyaltyCard';
@@ -84,6 +85,7 @@ export function HomePage() {
           <FeaturedBrews />
           <Testimonials />
           <CoffeeLoyaltyCard />
+          <WorkspaceWidget />
           <VisitUs onReserveClick={() => handleReserveClick('visit_us')} />
           <GallerySection />
           <InstagramSection />

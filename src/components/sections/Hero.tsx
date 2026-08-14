@@ -145,7 +145,7 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
               className="absolute -top-10 -right-6 text-accent opacity-60 cursor-pointer pointer-events-auto select-none transition-all duration-300"
               style={{ 
                 animation: isLeafHovered ? 'wiggleLeaf 0.5s infinite ease-in-out' : 'rotateLeaf 4s infinite ease-in-out',
-                filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15))'
+                filter: isLeafHovered ? 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25))' : 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15))'
               }}
               onMouseEnter={() => setIsLeafHovered(true)}
               onMouseLeave={() => setIsLeafHovered(false)}

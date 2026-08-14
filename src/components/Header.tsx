@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Menu as MenuIcon, X, Globe, Sun, Moon, CalendarCheck } from 'lucide-react';
+import { Menu as MenuIcon, X, Globe, Sun, Moon, CalendarCheck, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import { motion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,9 +12,10 @@ interface HeaderProps {
   onViewReservedClick: () => void;
   onOrderClick: () => void;
   onMenuClick: () => void;
+  onPairingClick: () => void;
 }
 
-export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMenuClick }: HeaderProps) {
+export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMenuClick, onPairingClick }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
@@ -130,9 +131,18 @@ export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMe
           </motion.button>
           <motion.button 
             variants={itemVariants}
+            onClick={onPairingClick}
+            aria-label="Discover an AI Artisanal Coffee Pairing"
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent hover:text-accent/80 transition-colors bg-accent/5 px-3 py-1.5 rounded-full border border-accent/20 cursor-pointer"
+          >
+            <Sparkles size={14} className="text-accent" />
+            {language === 'en' ? 'Pairings' : 'মেলবন্ধন'}
+          </motion.button>
+          <motion.button 
+            variants={itemVariants}
             onClick={onViewReservedClick}
             aria-label="View your active reservations"
-            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent hover:text-accent/80 transition-colors bg-accent/5 px-3 py-1.5 rounded-full border border-accent/20"
+            className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-accent hover:text-accent/80 transition-colors bg-accent/5 px-3 py-1.5 rounded-full border border-accent/20 cursor-pointer"
           >
             <CalendarCheck size={14} />
             Reserved
@@ -197,6 +207,17 @@ export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMe
             )
           ))}
           <div className="grid grid-cols-1 gap-3 pt-4 border-t border-primary/10">
+            <Button 
+              variant="outline" 
+              className="w-full border-accent text-accent hover:bg-accent/5" 
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onPairingClick();
+              }}
+            >
+              <Sparkles size={18} className="mr-2 text-accent" />
+              {language === 'en' ? 'Artisanal Pairings' : 'আর্টিসানাল মেলবন্ধন'}
+            </Button>
             <Button 
               variant="outline" 
               className="w-full border-accent text-accent hover:bg-accent/5" 

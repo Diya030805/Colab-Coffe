@@ -5,8 +5,8 @@ import { Button } from '../ui/button';
 import { useLanguage } from '../../contexts/LanguageContext';
 import heroImg from '../../assets/images/cafe_interior_hero_1783588664843.jpg';
 
-export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => void, onOrderClick?: () => void }) {
-  const { t } = useLanguage();
+export function Hero({ onReserveClick, onOrderClick, onPairingClick }: { onReserveClick: () => void, onOrderClick?: () => void, onPairingClick?: () => void }) {
+  const { t, language } = useLanguage();
   const [isLeafHovered, setIsLeafHovered] = React.useState(false);
   const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
   const [isSpotlightActive, setIsSpotlightActive] = React.useState(false);
@@ -117,23 +117,72 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
             
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <Button 
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto group relative overflow-hidden"
                 onClick={() => {
                   document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                {t('hero.viewMenu')}
+                <span className="relative z-10 flex items-center justify-center gap-0 group-hover:gap-2.5 transition-all duration-300">
+                  {t('hero.viewMenu')}
+                  <span className="w-0 opacity-0 scale-0 group-hover:w-4 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out inline-flex items-center">
+                    <svg 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2"
+                      className="w-4 h-4 text-white"
+                    >
+                      <path d="M18.5 5.5C21.5 8.5 21.5 13.5 18.5 16.5C15.5 19.5 10.5 19.5 7.5 16.5C4.5 13.5 4.5 8.5 7.5 5.5C10.5 2.5 15.5 2.5 18.5 5.5Z" fill="currentColor" fillOpacity="0.15" />
+                      <path d="M6 18C9 15 9 9 12 12C15 15 15 9 18 6" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </span>
               </Button>
               <Button 
                 variant="outline" 
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto group relative overflow-hidden"
                 onClick={onReserveClick}
               >
-                {t('btn.reserve')}
+                <span className="relative z-10 flex items-center justify-center gap-0 group-hover:gap-2.5 transition-all duration-300">
+                  {t('btn.reserve')}
+                  <span className="w-0 opacity-0 scale-0 group-hover:w-4 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out inline-flex items-center">
+                    <svg 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2"
+                      className="w-4 h-4 text-accent"
+                    >
+                      <path d="M18.5 5.5C21.5 8.5 21.5 13.5 18.5 16.5C15.5 19.5 10.5 19.5 7.5 16.5C4.5 13.5 4.5 8.5 7.5 5.5C10.5 2.5 15.5 2.5 18.5 5.5Z" fill="currentColor" fillOpacity="0.15" />
+                      <path d="M6 18C9 15 9 9 12 12C15 15 15 9 18 6" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </span>
               </Button>
               <div className="hidden sm:flex items-center gap-3">
                 <div className="w-12 h-[1px] bg-primary"></div>
                 <span className="font-serif italic text-sm text-primary">{t('hero.location')}</span>
+              </div>
+            </div>
+
+            {/* AI Artisanal Pairing Spark Notification */}
+            <div 
+              onClick={onPairingClick}
+              className="mt-10 inline-flex items-center gap-3 cursor-pointer group bg-accent/5 border border-accent/15 hover:bg-accent/10 rounded-2xl px-4 py-2.5 transition-all duration-300 max-w-lg select-none"
+            >
+              <div className="relative flex h-3 w-3 items-center justify-center">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent"></span>
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-semibold text-accent uppercase tracking-wider mb-0.5">
+                  {language === 'bn' ? 'নতুন এআই মেলবন্ধন' : 'NEW AI PAIRING'}
+                </p>
+                <p className="text-xs text-primary/80 group-hover:text-primary transition-colors font-sans">
+                  {language === 'bn' 
+                    ? 'আপনার মেজাজ বলুন, আমাদের এআই ব্যারিস্তা নিখুঁত কফি ও খাবার মেলাবে →' 
+                    : 'Describe your mood & let our AI Barista suggest a perfect match →'}
+                </p>
               </div>
             </div>
           </div>

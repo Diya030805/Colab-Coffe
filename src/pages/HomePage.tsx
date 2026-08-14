@@ -16,6 +16,7 @@ import { GallerySection } from '../components/sections/GallerySection';
 import { CoffeeLoyaltyCard } from '../components/CoffeeLoyaltyCard';
 import { ReservationModal } from '../components/ReservationModal';
 import { OrderOnlineDialog } from '../components/OrderOnlineDialog';
+import { ArtisanalPairingModal } from '../components/ArtisanalPairingModal';
 import { BackToTop } from '../components/BackToTop';
 import { Preloader } from '../components/Preloader';
 import { usePreloader } from '../hooks/usePreloader';
@@ -25,6 +26,7 @@ import { trackEvent } from '../lib/analytics';
 export function HomePage() {
   const { isLoading, progress, isComplete } = usePreloader();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPairingOpen, setIsPairingOpen] = useState(false);
   const [reserveInitialStep, setReserveInitialStep] = useState<'form' | 'active'>('form');
   const [orderOpen, setOrderOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,6 +57,10 @@ export function HomePage() {
           onReserveClick={() => handleReserveClick('header')} 
           onViewReservedClick={handleViewReservedClick}
           onOrderClick={() => handleOrderClick('header')} 
+          onPairingClick={() => {
+            trackEvent('pairing_click', { location: 'header' });
+            setIsPairingOpen(true);
+          }}
           onMenuClick={() => {
             trackEvent('menu_open');
             setIsMenuOpen(true);
@@ -62,7 +68,13 @@ export function HomePage() {
         />
         
         <main>
-          <Hero onReserveClick={() => handleReserveClick('hero')} />
+          <Hero 
+            onReserveClick={() => handleReserveClick('hero')} 
+            onPairingClick={() => {
+              trackEvent('pairing_click', { location: 'hero' });
+              setIsPairingOpen(true);
+            }} 
+          />
           <Features />
           <MenuPreview onMenuClick={() => {
             trackEvent('menu_open');
@@ -91,6 +103,13 @@ export function HomePage() {
             isOpen={isModalOpen} 
             onClose={() => setIsModalOpen(false)} 
             initialStep={reserveInitialStep}
+          />
+        )}
+        
+        {isPairingOpen && (
+          <ArtisanalPairingModal 
+            isOpen={isPairingOpen} 
+            onClose={() => setIsPairingOpen(false)} 
           />
         )}
         

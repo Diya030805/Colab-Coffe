@@ -8,9 +8,36 @@ import heroImg from '../../assets/images/cafe_interior_hero_1783588664843.jpg';
 export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => void, onOrderClick?: () => void }) {
   const { t } = useLanguage();
   const [isLeafHovered, setIsLeafHovered] = React.useState(false);
+  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
+  const [isSpotlightActive, setIsSpotlightActive] = React.useState(false);
+  const sectionRef = React.useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!sectionRef.current) return;
+    const rect = sectionRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   return (
-    <section id="home" className="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-base">
+    <section 
+      id="home" 
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsSpotlightActive(true)}
+      onMouseLeave={() => setIsSpotlightActive(false)}
+      className="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-base"
+    >
+      {/* Warm Spotlight Mouse Follow Overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0"
+        style={{
+          opacity: isSpotlightActive ? 1 : 0,
+          background: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, rgba(251, 191, 36, 0.15) 0%, rgba(217, 119, 6, 0.04) 40%, transparent 100%)`,
+        }}
+      />
       <style>
         {`
           @keyframes gentleFloat {
@@ -19,7 +46,7 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
           }
           @keyframes cardFloat {
             0%, 100% { transform: translateY(0px) rotate(-3deg); }
-            50% { transform: translateY(12px) rotate(-3deg); }
+            50% { transform: translateY(12px) rotate(3deg); }
           }
           @keyframes heroEntrance {
             from {
@@ -40,6 +67,28 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
             0%, 100% { transform: rotate(0deg); }
             25% { transform: rotate(-12deg); }
             75% { transform: rotate(12deg); }
+          }
+          @keyframes candleFlicker {
+            0%, 100% {
+              opacity: 0.15;
+              filter: saturate(1) blur(0px);
+            }
+            25% {
+              opacity: 0.35;
+              filter: saturate(1.2) blur(1px);
+            }
+            45% {
+              opacity: 0.22;
+              filter: saturate(0.9) blur(0px);
+            }
+            70% {
+              opacity: 0.42;
+              filter: saturate(1.3) blur(2px);
+            }
+            85% {
+              opacity: 0.28;
+              filter: saturate(1.05) blur(0px);
+            }
           }
         `}
       </style>
@@ -121,6 +170,16 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
                 className="absolute inset-0 w-full h-full object-cover"
               />
               
+              {/* Warm Candlelight Flickering Pulse Overlay */}
+              <div 
+                className="absolute inset-0 pointer-events-none z-15"
+                style={{ 
+                  background: 'radial-gradient(circle at 70% 30%, rgba(251, 191, 36, 0.4) 0%, rgba(217, 119, 6, 0.15) 50%, transparent 100%)',
+                  mixBlendMode: 'color-burn',
+                  animation: 'candleFlicker 8s infinite ease-in-out'
+                }}
+              />
+              
               <div className="p-10 relative z-20 w-full">
                 <div className="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/60 mb-2">{t('hero.featured')}</div>
                 <div className="font-serif text-3xl text-white mb-4 italic">{t('hero.turmeric')}</div>
@@ -156,7 +215,7 @@ export function Hero({ onReserveClick, onOrderClick }: { onReserveClick: () => v
                 viewBox="0 0 24 24" 
                 fill="none" 
                 xmlns="http://www.w3.org/2000/svg"
-                className={`transition-transform duration-300 ease-out ${isLeafHovered ? 'scale-105' : 'scale-100'}`}
+                className={`transition-transform duration-300 ease-out ${isLeafHovered ? 'scale-105 rotate-[20deg]' : 'scale-100 rotate-0'}`}
               >
                 <path d="M12 2C12 2 19 6 19 12C19 18 12 22 12 22M12 2C12 2 5 6 5 12C5 18 12 22 12 22M12 2V22M12 7L19 10M12 12L19 15M12 7L5 10M12 12L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>

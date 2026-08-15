@@ -54,6 +54,53 @@
   --theme-secondary: #a8a29e;
 }
 
+/* High Contrast Mode Overrides */
+.high-contrast {
+  --theme-base: #FFFFFF !important;
+  --theme-primary: #000000 !important;
+  --theme-accent: #0000FF !important; /* Vivid accessible blue */
+  --theme-secondary: #000000 !important;
+}
+
+.high-contrast.dark {
+  --theme-base: #000000 !important;
+  --theme-primary: #FFFFFF !important;
+  --theme-accent: #FFFF00 !important; /* Pure high-contrast yellow */
+  --theme-secondary: #FFFFFF !important;
+}
+
+/* Enforce absolute contrasts, visible outlines, and clean boundaries on all items */
+.high-contrast *,
+.high-contrast *::before,
+.high-contrast *::after {
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.high-contrast button,
+.high-contrast a,
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  outline: 2px solid currentColor !important;
+  outline-offset: 1px !important;
+  border-color: currentColor !important;
+  font-weight: 600 !important; /* Make text bolder and easier to read */
+}
+
+.high-contrast input:focus,
+.high-contrast select:focus,
+.high-contrast textarea:focus,
+.high-contrast button:focus {
+  outline: 4px solid currentColor !important;
+  outline-offset: 2px !important;
+}
+
+/* Keep images fully visible but add a clean border */
+.high-contrast img {
+  border: 3px solid currentColor !important;
+}
+
 body {
   background-color: var(--theme-base);
   color: var(--theme-primary);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Menu as MenuIcon, X, Globe, Sun, Moon, CalendarCheck, Sparkles } from 'lucide-react';
+import { Menu as MenuIcon, X, Globe, Sun, Moon, CalendarCheck, Sparkles, Accessibility } from 'lucide-react';
 import { Button } from './ui/button';
 import { motion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -19,7 +19,7 @@ export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMe
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, highContrast, toggleHighContrast } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,6 +122,17 @@ export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMe
           </motion.button>
           <motion.button 
             variants={itemVariants}
+            onClick={toggleHighContrast} 
+            className={`flex items-center justify-center transition-all w-8 h-8 rounded-full ${
+              highContrast ? 'bg-accent text-black font-bold border border-accent shadow-md shadow-accent/20' : 'text-primary/70 hover:text-primary bg-primary/5'
+            }`}
+            aria-label="Toggle high contrast mode"
+            title="Toggle high contrast"
+          >
+            <Accessibility size={14} />
+          </motion.button>
+          <motion.button 
+            variants={itemVariants}
             onClick={toggleLanguage} 
             aria-label={`Switch language to ${language === 'en' ? 'Bengali' : 'English'}`}
             className="flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-primary/70 hover:text-primary transition-colors bg-primary/5 px-3 py-1.5 rounded-full"
@@ -163,6 +174,16 @@ export function Header({ onReserveClick, onViewReservedClick, onOrderClick, onMe
             aria-label="Toggle theme"
           >
             {theme === 'dark' ? <Sun size={12} /> : <Moon size={12} />}
+          </button>
+          <button 
+            onClick={toggleHighContrast} 
+            className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
+              highContrast ? 'bg-accent text-black font-bold border border-accent' : 'text-primary/70 bg-primary/5'
+            }`}
+            aria-label="Toggle high contrast mode"
+            title="Toggle high contrast"
+          >
+            <Accessibility size={12} />
           </button>
           <button 
             onClick={toggleLanguage} 

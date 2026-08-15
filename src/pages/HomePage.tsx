@@ -10,6 +10,7 @@ import { MenuPreview } from '../components/sections/MenuPreview';
 import { About } from '../components/sections/About';
 import { Testimonials } from '../components/sections/Testimonials';
 import { FeaturedBrews } from '../components/sections/FeaturedBrews';
+import { BrewGuide } from '../components/sections/BrewGuide';
 import { VisitUs } from '../components/sections/VisitUs';
 import { WorkspaceWidget } from '../components/sections/WorkspaceWidget';
 import { InstagramSection } from '../components/sections/InstagramSection';
@@ -84,6 +85,7 @@ export function HomePage() {
           }} />
           <About />
           <FeaturedBrews />
+          <BrewGuide />
           <Testimonials />
           <CoffeeLoyaltyCard />
           <WorkspaceWidget />

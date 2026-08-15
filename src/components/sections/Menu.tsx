@@ -89,7 +89,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Gluten-Free', 'Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -103,7 +103,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free', 'Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -117,7 +117,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: true,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1541532713592-79a0317b6b77?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -131,7 +131,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -159,7 +159,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: [],
     image_url: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -175,7 +175,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: false,
-    dietary: [],
+    dietary: ['Nut-Free'],
     type: [],
     image_url: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -189,7 +189,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: [],
+    dietary: ['Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -203,7 +203,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: true,
-    dietary: [],
+    dietary: ['Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -217,7 +217,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: [],
+    dietary: ['Nut-Free'],
     type: ['Savory Snacks'],
     image_url: 'https://images.unsplash.com/photo-1521390188846-e2a3a97453a0?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -233,7 +233,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Gluten-Free', 'Nut-Free'],
     type: ['Coffee'],
     image_url: turmericLatteImg,
     created_at: new Date().toISOString()
@@ -247,7 +247,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Coffee'],
     image_url: biscoffLatteImg,
     created_at: new Date().toISOString()
@@ -261,7 +261,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Gluten-Free', 'Nut-Free'],
     type: ['Coffee'],
     image_url: coldCoffeeImg,
     created_at: new Date().toISOString()
@@ -275,7 +275,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free', 'Nut-Free'],
     type: [],
     image_url: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -289,7 +289,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: false,
     contains_egg: false,
-    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free'],
+    dietary: ['Vegetarian', 'Vegan', 'Gluten-Free', 'Nut-Free'],
     type: ['Tea'],
     image_url: gingerTulsiTeaImg,
     created_at: new Date().toISOString()
@@ -319,7 +319,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: false,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Pastries'],
     image_url: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -333,7 +333,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Pastries'],
     image_url: 'https://images.unsplash.com/photo-1524351199679-46cddf530c04?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -347,7 +347,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     is_signature: true,
     is_popular: true,
     contains_egg: false,
-    dietary: ['Vegetarian'],
+    dietary: ['Vegetarian', 'Nut-Free'],
     type: ['Pastries'],
     image_url: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&q=80&w=400',
     created_at: new Date().toISOString()
@@ -595,7 +595,7 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
     fetchMenu();
   }, []);
 
-  const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free'];
+  const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free', 'Nut-Free'];
 
   const toggleDietaryFilter = (opt: string) => {
     if (selectedDietary.includes(opt)) {
@@ -793,6 +793,7 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
                     {opt === 'Vegetarian' && (language === 'bn' ? 'নিরামিষ' : 'Vegetarian')}
                     {opt === 'Vegan' && (language === 'bn' ? 'ভেগান' : 'Vegan')}
                     {opt === 'Gluten-Free' && (language === 'bn' ? 'গ্লুটেন-মুক্ত' : 'Gluten-Free')}
+                    {opt === 'Nut-Free' && (language === 'bn' ? 'বাদাম-মুক্ত' : 'Nut-Free')}
                   </button>
                 );
               })}

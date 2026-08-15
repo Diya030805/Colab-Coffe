@@ -10,6 +10,13 @@ import { MenuGallery } from '../MenuGallery';
 import { supabase } from '../../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Import newly generated high-quality food photography assets
+import turmericLatteImg from '../../assets/images/turmeric_latte_1786773923878.jpg';
+import biscoffLatteImg from '../../assets/images/biscoff_latte_1786773936871.jpg';
+import coldCoffeeImg from '../../assets/images/cold_coffee_1786773949316.jpg';
+import hotChocolateImg from '../../assets/images/hot_chocolate_1786773961801.jpg';
+import gingerTulsiTeaImg from '../../assets/images/ginger_tulsi_tea_1786773972493.jpg';
+
 // Customer reviews structure & pre-seeded reviews for local menu items
 export interface Review {
   id: string;
@@ -227,7 +234,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     contains_egg: false,
     dietary: ['Vegetarian', 'Gluten-Free'],
     type: ['Coffee'],
-    image_url: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=400',
+    image_url: turmericLatteImg,
     created_at: new Date().toISOString()
   },
   {
@@ -241,7 +248,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     contains_egg: false,
     dietary: ['Vegetarian'],
     type: ['Coffee'],
-    image_url: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=400',
+    image_url: biscoffLatteImg,
     created_at: new Date().toISOString()
   },
   {
@@ -255,7 +262,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     contains_egg: false,
     dietary: ['Vegetarian', 'Gluten-Free'],
     type: ['Coffee'],
-    image_url: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=80&w=400',
+    image_url: coldCoffeeImg,
     created_at: new Date().toISOString()
   },
   {
@@ -283,7 +290,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     contains_egg: false,
     dietary: ['Vegetarian', 'Vegan', 'Gluten-Free'],
     type: ['Tea'],
-    image_url: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=400',
+    image_url: gingerTulsiTeaImg,
     created_at: new Date().toISOString()
   },
   {
@@ -297,7 +304,7 @@ const LOCAL_MENU_CATALOG: MenuItem[] = [
     contains_egg: false,
     dietary: ['Vegetarian', 'Gluten-Free'],
     type: [],
-    image_url: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&q=80&w=400',
+    image_url: hotChocolateImg,
     created_at: new Date().toISOString()
   },
 

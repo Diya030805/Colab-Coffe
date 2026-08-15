@@ -118,7 +118,7 @@ const SEEDED_EVENTS: CommunityEvent[] = [
   }
 ];
 
-export function WorkspaceWidget() {
+export function WorkspaceWidget({ onReserveClick }: { onReserveClick?: () => void } = {}) {
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'booking' | 'calendar'>('booking');
   
@@ -415,7 +415,7 @@ export function WorkspaceWidget() {
                         <div
                           key={zone.id}
                           onClick={() => handleZoneSelect(zone.id)}
-                          className={`cursor-pointer rounded-2xl p-5 border text-left transition-all duration-300 relative group flex flex-col justify-between h-44 select-none ${
+                          className={`cursor-pointer rounded-2xl p-5 border text-left transition-all duration-300 relative group flex flex-col justify-between min-h-[13rem] h-auto select-none pb-4 ${
                             isSelected 
                               ? 'bg-accent/10 border-accent shadow-[0_10px_20px_rgba(197,160,111,0.15)]' 
                               : 'bg-[#1a1511]/50 border-primary/5 ' + zone.color
@@ -430,13 +430,29 @@ export function WorkspaceWidget() {
                             </span>
                           </div>
 
-                          <div className="mt-4">
-                            <h4 className="text-sm font-semibold text-primary mb-1">
-                              {language === 'bn' ? zone.nameBn : zone.nameEn}
-                            </h4>
-                            <p className="text-[11px] text-primary/60 line-clamp-2 leading-relaxed font-sans">
-                              {language === 'bn' ? zone.descBn : zone.descEn}
-                            </p>
+                          <div className="mt-4 flex flex-col gap-3">
+                            <div>
+                              <h4 className="text-sm font-semibold text-primary mb-1">
+                                {language === 'bn' ? zone.nameBn : zone.nameEn}
+                              </h4>
+                              <p className="text-[11px] text-primary/60 line-clamp-2 leading-relaxed font-sans">
+                                {language === 'bn' ? zone.descBn : zone.descEn}
+                              </p>
+                            </div>
+                            
+                            <Button 
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-[10px] h-8 rounded-lg border-accent/20 hover:border-accent hover:bg-accent hover:text-black font-semibold uppercase tracking-widest mt-1 cursor-pointer transition-all duration-300"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (onReserveClick) {
+                                  onReserveClick();
+                                }
+                              }}
+                            >
+                              {language === 'bn' ? 'টেবিল বুকিং' : 'Reserve a Table'}
+                            </Button>
                           </div>
 
                           {isSelected && (

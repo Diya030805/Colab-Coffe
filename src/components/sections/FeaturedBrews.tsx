@@ -95,7 +95,7 @@ const BrewCard: React.FC<BrewCardProps> = ({ brew }) => {
   );
 }
 
-export function FeaturedBrews() {
+export function FeaturedBrews({ onReserveClick }: { onReserveClick?: () => void } = {}) {
   return (
     <section className="py-24 md:py-32 bg-primary/5 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -118,6 +118,20 @@ export function FeaturedBrews() {
             <BrewCard key={brew.id} brew={brew} />
           ))}
         </div>
+
+        {onReserveClick && (
+          <div className="mt-16 text-center">
+            <p className="text-primary/75 text-sm mb-6 font-sans italic max-w-md mx-auto leading-relaxed">
+              Want to experience these craft brews fresh in our cozy South Kolkata cafe? Secure your spot today.
+            </p>
+            <Button 
+              onClick={onReserveClick}
+              className="px-8 py-6 text-xs uppercase tracking-widest font-bold font-sans rounded-full shadow-md hover:shadow-xl transition-all duration-300"
+            >
+              Reserve a Table
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Decorative Blobs */}

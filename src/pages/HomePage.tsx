@@ -83,12 +83,12 @@ export function HomePage() {
             trackEvent('menu_open');
             setIsMenuOpen(true);
           }} />
-          <About />
-          <FeaturedBrews />
+          <About onReserveClick={() => handleReserveClick('about')} />
+          <FeaturedBrews onReserveClick={() => handleReserveClick('featured_brews')} />
           <BrewGuide />
           <Testimonials />
           <CoffeeLoyaltyCard />
-          <WorkspaceWidget />
+          <WorkspaceWidget onReserveClick={() => handleReserveClick('workspace_widget')} />
           <VisitUs onReserveClick={() => handleReserveClick('visit_us')} />
           <GallerySection />
           <InstagramSection />

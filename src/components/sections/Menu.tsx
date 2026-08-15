@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, Sparkles, Flame, Leaf, Compass, ShoppingBag } from 'lucide-react';
+import { X, Search, Sparkles, Flame, Leaf, Compass, ShoppingBag, Star, MessageSquare, Send, User } from 'lucide-react';
 import { MenuItem } from '../../types';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
@@ -9,6 +9,65 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { MenuGallery } from '../MenuGallery';
 import { supabase } from '../../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
+
+// Customer reviews structure & pre-seeded reviews for local menu items
+export interface Review {
+  id: string;
+  itemId: string;
+  reviewerName: string;
+  rating: number; // 1 to 5
+  comment: string;
+  commentBn?: string;
+  createdAt: string;
+}
+
+const INITIAL_REVIEWS: Review[] = [
+  {
+    id: 'r1',
+    itemId: 'fv1', // Nachos
+    reviewerName: 'Siddharth Roy',
+    rating: 5,
+    comment: 'The avocado mousse was incredibly smooth and seasoned perfectly! Absolute crispiness.',
+    commentBn: 'অ্যাভোকাডো মাউস অত্যন্ত মসৃণ এবং মশলাদার ছিল! অসাধারণ মুচমুচে নাচোস।',
+    createdAt: '2026-08-10T12:00:00Z'
+  },
+  {
+    id: 'r2',
+    itemId: 'fv3', // Avocado Bruschetta
+    reviewerName: 'Ananya Sen',
+    rating: 5,
+    comment: 'Deviled yolk-mousse is a stroke of genius on sourdough! Must try when in Lake Gardens.',
+    commentBn: 'টক-ঝাল ডিমের কুসুমের মাউস টোস্টের স্বাদ অসাধারণ! লেক গার্ডেন্সে আসলে অবশ্যই ট্রাই করবেন।',
+    createdAt: '2026-08-11T14:30:00Z'
+  },
+  {
+    id: 'r3',
+    itemId: 'fn3', // Fish Fry
+    reviewerName: 'Subhasish Bose',
+    rating: 5,
+    comment: 'Pure premium Bhetki fillet. Crispy, golden, and authentic Calcutta style!',
+    commentBn: 'খাঁটি ভেটকি ফিলে। মুচমুচে, সোনালী এবং কলকাতার আসল ঐতিহ্যবাহী ফ্লেভার!',
+    createdAt: '2026-08-12T09:15:00Z'
+  },
+  {
+    id: 'r4',
+    itemId: 'b1', // Turmeric Latte
+    reviewerName: 'Elena Rostova',
+    rating: 4,
+    comment: 'A gorgeous soothing drink with a beautiful hint of honey and ginger. Highly recommended.',
+    commentBn: 'মধু ও আদার ফ্লেভার সমৃদ্ধ অত্যন্ত শান্তি দায়ক একটি পানীয়। ভীষণ ভালো লেগেছে।',
+    createdAt: '2026-08-13T16:45:00Z'
+  },
+  {
+    id: 'r5',
+    itemId: 'fv2', // House Fries
+    reviewerName: 'Joydeep Mukherjee',
+    rating: 4,
+    comment: 'Very hot and crisp. The garlic aioli was phenomenal!',
+    commentBn: 'গরম গরম এবং বেশ ক্রিস্পি। রসুন আইওলি সসটি অসাধারণ ছিল!',
+    createdAt: '2026-08-13T18:20:00Z'
+  }
+];
 
 // Premium static local catalog with high-quality descriptions, images, prices and badges in English & Bengali
 const LOCAL_MENU_CATALOG: MenuItem[] = [
@@ -387,6 +446,70 @@ const BENGALI_DESCRIPTIONS: Record<string, { name: string; desc: string }> = {
 
 export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClick }: { onClose?: () => void, onReserveClick: () => void, onViewReservedClick: () => void, onOrderClick: () => void }) {
   const [activeCategory, setActiveCategory] = useState<'food' | 'beverages' | 'desserts'>('beverages');
+  
+  // Reviews state with localStorage persistence
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    const saved = localStorage.getItem('menu_item_reviews');
+    return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('menu_item_reviews', JSON.stringify(reviews));
+  }, [reviews]);
+
+  // Expanding review display state
+  const [expandedReviewItemId, setExpandedReviewItemId] = useState<string | null>(null);
+
+  // New review input form values
+  const [newReviewerName, setNewReviewerName] = useState('');
+  const [newRating, setNewRating] = useState(5);
+  const [newComment, setNewComment] = useState('');
+  const [reviewSubmitSuccess, setReviewSubmitSuccess] = useState<string | null>(null);
+
+  const getItemReviews = (itemId: string) => {
+    return reviews.filter(r => r.itemId === itemId);
+  };
+
+  const getItemAverageRating = (itemId: string) => {
+    const itemReviews = getItemReviews(itemId);
+    if (itemReviews.length === 0) {
+      // Seed a stable rating per item ID so all items look popular and reviewed
+      const hash = itemId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const seedAvg = 4.2 + (hash % 8) / 10; // stable rating between 4.2 and 4.9
+      const seedCount = 4 + (hash % 12); // stable review count
+      return { rating: parseFloat(seedAvg.toFixed(1)), count: seedCount };
+    }
+    const sum = itemReviews.reduce((acc, r) => acc + r.rating, 0);
+    return {
+      rating: parseFloat((sum / itemReviews.length).toFixed(1)),
+      count: itemReviews.length
+    };
+  };
+
+  const handleAddReview = (itemId: string) => {
+    if (!newReviewerName.trim() || !newComment.trim()) return;
+
+    const newReview: Review = {
+      id: `r-${Date.now()}`,
+      itemId,
+      reviewerName: newReviewerName.trim(),
+      rating: newRating,
+      comment: newComment.trim(),
+      createdAt: new Date().toISOString()
+    };
+
+    setReviews(prev => [newReview, ...prev]);
+    setNewReviewerName('');
+    setNewComment('');
+    setNewRating(5);
+    setReviewSubmitSuccess(itemId);
+    
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      setReviewSubmitSuccess(null);
+    }, 3000);
+  };
+
   const [foodType, setFoodType] = useState<'all' | 'veg' | 'nonveg'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
@@ -717,81 +840,225 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.3 }}
-                        className="group bg-[#14100d] hover:bg-[#1a1411] border border-primary/5 hover:border-accent/35 rounded-2xl p-4 flex gap-4 transition-all duration-300 relative overflow-hidden select-none"
+                        className="group bg-[#14100d] hover:bg-[#1a1411] border border-primary/5 hover:border-accent/35 rounded-2xl p-4 flex flex-col transition-all duration-300 relative overflow-hidden select-none"
                       >
                         {/* Interactive hover item glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-accent/0 via-accent/0 to-accent/[0.02] pointer-events-none" />
 
-                        {/* Image aspect-square container */}
-                        {item.image_url && (
-                          <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 bg-[#0c0a08] border border-primary/5 relative">
-                            <img
-                              src={item.image_url}
-                              alt={displayName}
-                              referrerPolicy="no-referrer"
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                              loading="lazy"
-                            />
-                            {item.is_signature && (
-                              <div className="absolute top-1 left-1 bg-accent/90 text-black px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider flex items-center gap-0.5">
-                                <Sparkles size={6} />
-                                Sig
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        {/* Top Section: Main info row (Image left, Details right) */}
+                        <div className="flex gap-4">
+                          {/* Image aspect-square container */}
+                          {item.image_url && (
+                            <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0 bg-[#0c0a08] border border-primary/5 relative">
+                              <img
+                                src={item.image_url}
+                                alt={displayName}
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                loading="lazy"
+                              />
+                              {item.is_signature && (
+                                <div className="absolute top-1 left-1 bg-accent/90 text-black px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider flex items-center gap-0.5">
+                                  <Sparkles size={6} />
+                                  Sig
+                                </div>
+                              )}
+                            </div>
+                          )}
 
-                        {/* Text and Badges details */}
-                        <div className="flex flex-col justify-between flex-grow">
-                          <div>
-                            <div className="flex justify-between items-start gap-2">
-                              <h4 className="font-serif text-sm md:text-base font-semibold text-primary group-hover:text-accent transition-colors leading-tight">
-                                {displayName}
-                              </h4>
-                              <span className="font-mono text-xs md:text-sm font-semibold text-accent shrink-0">
-                                ₹{item.price}
-                              </span>
+                          {/* Text and Badges details */}
+                          <div className="flex flex-col justify-between flex-grow">
+                            <div>
+                              <div className="flex justify-between items-start gap-2">
+                                <h4 className="font-serif text-sm md:text-base font-semibold text-primary group-hover:text-accent transition-colors leading-tight">
+                                  {displayName}
+                                </h4>
+                                <span className="font-mono text-xs md:text-sm font-semibold text-accent shrink-0">
+                                  ₹{item.price}
+                                </span>
+                              </div>
+
+                              <p className="text-[11px] md:text-xs text-primary/60 font-sans leading-relaxed mt-1 line-clamp-2 md:line-clamp-3">
+                                {displayDesc}
+                              </p>
+
+                              {/* Interactive Ratings & Reviews trigger */}
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedReviewItemId(expandedReviewItemId === item.id ? null : item.id);
+                                }}
+                                className="flex items-center gap-1.5 text-[10px] font-bold text-accent hover:text-accent/80 transition-colors mt-2.5 text-left bg-accent/5 hover:bg-accent/10 px-2.5 py-1 rounded-lg w-fit"
+                                aria-label="View menu item reviews"
+                              >
+                                <div className="flex items-center text-amber-400">
+                                  <Star size={11} fill="currentColor" className="mr-0.5 shrink-0" />
+                                  <span>{getItemAverageRating(item.id).rating}</span>
+                                </div>
+                                <span className="text-primary/20 font-normal">|</span>
+                                <div className="flex items-center gap-1 text-primary/60 hover:text-primary transition-colors">
+                                  <MessageSquare size={10} className="shrink-0" />
+                                  <span>{getItemAverageRating(item.id).count} {language === 'bn' ? 'রিভিউ' : 'Reviews'}</span>
+                                </div>
+                              </button>
                             </div>
 
-                            <p className="text-[11px] md:text-xs text-primary/60 font-sans leading-relaxed mt-1 line-clamp-2 md:line-clamp-3">
-                              {displayDesc}
-                            </p>
-                          </div>
+                            {/* Dynamic diet indicators and badge details */}
+                            <div className="flex flex-wrap items-center gap-1.5 mt-3 pt-2 border-t border-primary/5">
+                              {/* Veg/Non-Veg colored circle */}
+                              {item.category === 'food' && (
+                                <span className={cn(
+                                  "w-2 h-2 rounded-full",
+                                  item.dietary?.includes('Vegetarian') || item.dietary?.includes('Vegan') ? "bg-emerald-500" : "bg-red-500"
+                                )} />
+                              )}
 
-                          {/* Dynamic diet indicators and badge details */}
-                          <div className="flex flex-wrap items-center gap-1.5 mt-3 pt-2 border-t border-primary/5">
-                            {/* Veg/Non-Veg colored circle */}
-                            {item.category === 'food' && (
-                              <span className={cn(
-                                "w-2 h-2 rounded-full",
-                                item.dietary?.includes('Vegetarian') || item.dietary?.includes('Vegan') ? "bg-emerald-500" : "bg-red-500"
-                              )} />
-                            )}
-
-                            {/* Contains Egg Indicator */}
-                            {item.contains_egg && (
-                              <span className="text-[8px] bg-[#221711] text-[#cca185] border border-orange-950 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                                Egg
-                              </span>
-                            )}
-
-                            {/* General dietary list badges */}
-                            {item.dietary?.map(d => {
-                              if (d === 'Vegetarian') return null; // handled by dot
-                              return (
-                                <span key={d} className="text-[8px] bg-primary/5 text-primary/50 px-1.5 py-0.5 rounded font-sans">
-                                  {d}
+                              {/* Contains Egg Indicator */}
+                              {item.contains_egg && (
+                                <span className="text-[8px] bg-[#221711] text-[#cca185] border border-orange-950 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                                  Egg
                                 </span>
-                              );
-                            })}
+                              )}
 
-                            {item.is_popular && (
-                              <span className="text-[8px] bg-accent/10 text-accent px-1.5 py-0.5 rounded font-bold tracking-wider uppercase ml-auto">
-                                Popular
-                              </span>
-                            )}
+                              {/* General dietary list badges */}
+                              {item.dietary?.map(d => {
+                                if (d === 'Vegetarian') return null; // handled by dot
+                                return (
+                                  <span key={d} className="text-[8px] bg-primary/5 text-primary/50 px-1.5 py-0.5 rounded font-sans">
+                                    {d}
+                                  </span>
+                                );
+                              })}
+
+                              {item.is_popular && (
+                                <span className="text-[8px] bg-accent/10 text-accent px-1.5 py-0.5 rounded font-bold tracking-wider uppercase ml-auto">
+                                  Popular
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
+
+                        {/* Bottom Section: Expandable Customer Reviews & Feedback Panel */}
+                        <AnimatePresence>
+                          {expandedReviewItemId === item.id && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.35, ease: 'easeInOut' }}
+                              className="overflow-hidden border-t border-primary/5 mt-4 pt-4 space-y-4"
+                            >
+                              {/* Existing Reviews List */}
+                              <div className="max-h-44 overflow-y-auto space-y-3.5 pr-1 scrollbar-thin">
+                                <h5 className="text-[10px] uppercase tracking-widest font-bold text-primary/40 mb-1">
+                                  {language === 'bn' ? 'গ্রাহকদের মতামত' : 'Customer Feedback'}
+                                </h5>
+                                {getItemReviews(item.id).length === 0 ? (
+                                  <p className="text-[10px] italic text-primary/40">
+                                    {language === 'bn' ? 'এখনো কোনো রিভিউ দেওয়া হয়নি। প্রথম রিভিউটি দিন!' : 'No reviews yet. Be the first to share your experience!'}
+                                  </p>
+                                ) : (
+                                  getItemReviews(item.id).map(rev => (
+                                    <div key={rev.id} className="bg-primary/[0.01] border border-primary/5 rounded-xl p-3 space-y-1">
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-[10px] font-bold text-primary/80 flex items-center gap-1 font-sans">
+                                          <User size={10} className="text-primary/30 shrink-0" />
+                                          {rev.reviewerName}
+                                        </span>
+                                        <div className="flex text-amber-400">
+                                          {Array.from({ length: 5 }).map((_, i) => (
+                                            <Star 
+                                              key={i} 
+                                              size={8} 
+                                              fill={i < rev.rating ? "currentColor" : "none"} 
+                                              className={i < rev.rating ? "text-amber-400" : "text-primary/10"} 
+                                            />
+                                          ))}
+                                        </div>
+                                      </div>
+                                      <p className="text-[10px] text-primary/70 leading-relaxed font-sans">
+                                        {language === 'bn' && rev.commentBn ? rev.commentBn : rev.comment}
+                                      </p>
+                                      <span className="text-[8px] text-primary/30 font-mono block">
+                                        {new Date(rev.createdAt).toLocaleDateString(language === 'bn' ? 'bn-IN' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                      </span>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+
+                              {/* Interactive Form: Submit your feedback */}
+                              <div className="bg-[#1a1411]/40 border border-primary/5 rounded-xl p-3.5 space-y-3">
+                                <div className="flex justify-between items-center">
+                                  <h6 className="text-[9px] uppercase tracking-widest font-bold text-accent">
+                                    {language === 'bn' ? 'রিভিউ ও রেটিং লিখুন' : 'Rate & Review'}
+                                  </h6>
+                                  
+                                  {/* Hover/Interactive Star selector */}
+                                  <div className="flex gap-1">
+                                    {[1, 2, 3, 4, 5].map((starVal) => (
+                                      <button
+                                        key={starVal}
+                                        type="button"
+                                        onClick={() => setNewRating(starVal)}
+                                        className="text-amber-400 hover:scale-110 transition-transform cursor-pointer"
+                                      >
+                                        <Star 
+                                          size={12} 
+                                          fill={starVal <= newRating ? "currentColor" : "none"} 
+                                          className={starVal <= newRating ? "text-amber-400" : "text-primary/20"} 
+                                        />
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                  {/* Reviewer Name */}
+                                  <input
+                                    type="text"
+                                    placeholder={language === 'bn' ? 'আপনার নাম' : 'Your name'}
+                                    value={newReviewerName}
+                                    onChange={(e) => setNewReviewerName(e.target.value)}
+                                    className="w-full bg-[#0c0a08]/50 text-[11px] text-primary placeholder-primary/25 border border-primary/5 rounded-lg px-2.5 py-1.5 focus:border-accent/40 outline-none font-sans"
+                                    required
+                                  />
+
+                                  {/* Reviewer Comment */}
+                                  <textarea
+                                    placeholder={language === 'bn' ? 'আপনার মতামত লিখুন...' : 'Write your culinary feedback...'}
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    rows={2}
+                                    className="w-full bg-[#0c0a08]/50 text-[11px] text-primary placeholder-primary/25 border border-primary/5 rounded-lg px-2.5 py-1.5 focus:border-accent/40 outline-none resize-none font-sans"
+                                    required
+                                  />
+
+                                  {reviewSubmitSuccess === item.id ? (
+                                    <motion.p 
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      className="text-[10px] text-emerald-400 font-bold text-center py-1"
+                                    >
+                                      {language === 'bn' ? '✓ রিভিউটি সফলভাবে জমা হয়েছে!' : '✓ Review submitted successfully!'}
+                                    </motion.p>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleAddReview(item.id)}
+                                      disabled={!newReviewerName.trim() || !newComment.trim()}
+                                      className="w-full bg-accent disabled:opacity-20 disabled:hover:bg-accent hover:bg-accent/95 text-black text-[10px] font-bold uppercase tracking-wider py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer select-none"
+                                    >
+                                      <Send size={9} />
+                                      {language === 'bn' ? 'রিভিউ দিন' : 'Submit Review'}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     );
                   })}

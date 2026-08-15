@@ -22,6 +22,7 @@ import { BackToTop } from '../components/BackToTop';
 import { Preloader } from '../components/Preloader';
 import { usePreloader } from '../hooks/usePreloader';
 import { AudioPlayer } from '../components/AudioPlayer';
+import { LiveChatBubble } from '../components/LiveChatBubble';
 import { trackEvent } from '../lib/analytics';
 
 export function HomePage() {
@@ -117,6 +118,7 @@ export function HomePage() {
         
         <BackToTop />
         <AudioPlayer />
+        <LiveChatBubble />
       </div>
 
       {isMenuOpen && (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Search, Sparkles, Flame, Leaf, Compass, ShoppingBag, Star, MessageSquare, Send, User } from 'lucide-react';
+import { X, Search, Sparkles, Flame, Leaf, Compass, ShoppingBag, Star, MessageSquare, Send, User, QrCode } from 'lucide-react';
 import { MenuItem } from '../../types';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
@@ -9,6 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { MenuGallery } from '../MenuGallery';
 import { supabase } from '../../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
+import { MenuQrModal } from './MenuQrModal';
 
 // Import newly generated high-quality food photography assets
 import turmericLatteImg from '../../assets/images/turmeric_latte_1786773923878.jpg';
@@ -472,6 +473,7 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
   const [reviewSubmitSuccess, setReviewSubmitSuccess] = useState<string | null>(null);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const getItemReviews = (itemId: string) => {
     return reviews.filter(r => r.itemId === itemId);
@@ -655,15 +657,26 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
             </span>
           </div>
 
-          {onClose && (
-            <button 
-              onClick={handleClose}
-              className="p-2 rounded-full bg-primary/5 hover:bg-primary/10 text-primary transition-all duration-300 hover:rotate-90 cursor-pointer"
-              aria-label="Close menu"
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsQrModalOpen(true)}
+              className="px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent hover:bg-accent/15 transition-all text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer select-none"
+              title={language === 'bn' ? 'মেনু কিউআর কোড জেনারেটর' : 'Generate Printable Menu QR Code'}
             >
-              <X size={18} />
+              <QrCode size={11} />
+              <span>{language === 'bn' ? 'কিউআর কোড' : 'Table QR Code'}</span>
             </button>
-          )}
+
+            {onClose && (
+              <button 
+                onClick={handleClose}
+                className="p-2 rounded-full bg-primary/5 hover:bg-primary/10 text-primary transition-all duration-300 hover:rotate-90 cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Core content wrapper */}
@@ -1112,6 +1125,14 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
               >
                 View My Reservations
               </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => setIsQrModalOpen(true)}
+                className="text-[#cca185] hover:bg-[#cca185]/5 text-xs font-bold uppercase tracking-widest px-4 h-11 rounded-xl cursor-pointer select-none flex items-center gap-1.5"
+              >
+                <QrCode size={13} />
+                {language === 'bn' ? 'মেনু কিউআর প্রিন্ট করুন' : 'Print Table QR Card'}
+              </Button>
             </div>
           </div>
 
@@ -1122,6 +1143,12 @@ export function Menu({ onClose, onReserveClick, onViewReservedClick, onOrderClic
       <div className="hidden lg:block lg:w-[35%] h-full">
         <MenuGallery />
       </div>
+
+      {/* High-fidelity printable QR Modal */}
+      <MenuQrModal 
+        isOpen={isQrModalOpen} 
+        onClose={() => setIsQrModalOpen(false)} 
+      />
     </div>
   );
 }
